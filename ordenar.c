@@ -116,27 +116,89 @@ int *combSort(int *vetor){
     return vetor;
 }
 
-/* ----------------- QUICK SORT ----------------- */
+/* ----------------- QUICK SORT OTIMIZADO ----------------- */
+// Insertion Sort para partições pequenas
+static void insertionSortQS(int *arr, int low, int high) {
+    for (int i = low + 1; i <= high; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= low && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+// Mediana de três para melhor escolha do pivô
+static int medianOfThree(int *arr, int low, int high) {
+    int mid = low + (high - low) / 2;
+    
+    // Ordena low, mid, high
+    if (arr[low] > arr[mid]) {
+        int tmp = arr[low]; arr[low] = arr[mid]; arr[mid] = tmp;
+    }
+    if (arr[low] > arr[high]) {
+        int tmp = arr[low]; arr[low] = arr[high]; arr[high] = tmp;
+    }
+    if (arr[mid] > arr[high]) {
+        int tmp = arr[mid]; arr[mid] = arr[high]; arr[high] = tmp;
+    }
+    
+    return mid;
+}
+
 static int partition_qs(int *arr, int low, int high) {
-    int pivot = arr[high];
+    // Escolher pivô usando mediana de três
+    int pivotIndex = medianOfThree(arr, low, high);
+    int pivot = arr[pivotIndex];
+    
+    // Mover pivô para o final
+    int tmp = arr[pivotIndex]; 
+    arr[pivotIndex] = arr[high]; 
+    arr[high] = tmp;
+    
     int i = low - 1;
     for (int j = low; j < high; j++) {
         if (arr[j] <= pivot) {
             i++;
-            int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            tmp = arr[i]; 
+            arr[i] = arr[j]; 
+            arr[j] = tmp;
         }
     }
-    int tmp = arr[i+1]; arr[i+1] = arr[high]; arr[high] = tmp;
-    return i+1;
+    
+    // Colocar pivô na posição correta
+    tmp = arr[i + 1]; 
+    arr[i + 1] = arr[high]; 
+    arr[high] = tmp;
+    
+    return i + 1;
 }
+
 static void quickSortRec(int *arr, int low, int high) {
-    if (low < high) {
+    // Usar insertion sort para partições pequenas
+    if (high - low < INSERTION_THRESHOLD) {
+        insertionSortQS(arr, low, high);
+        return;
+    }
+    
+    while (low < high) {
         int pi = partition_qs(arr, low, high);
-        quickSortRec(arr, low, pi - 1);
-        quickSortRec(arr, pi + 1, high);
+        
+        // Ordenar a partição menor primeiro para otimizar recursão
+        if (pi - low < high - pi) {
+            quickSortRec(arr, low, pi - 1);
+            low = pi + 1;
+        } else {
+            quickSortRec(arr, pi + 1, high);
+            high = pi - 1;
+        }
     }
 }
+
 int *quickSort(int *vetor){
+    if (TAM <= 1) return vetor;
     quickSortRec(vetor, 0, TAM - 1);
     return vetor;
 }
@@ -241,44 +303,102 @@ int *countingSort(int *vetor){
     return vetor;
 }
 
-/* ----------------- BUCKET SORT ----------------- */
+/* ----------------- BUCKET SORT OTIMIZADO ----------------- */
 int *bucketSort(int *vetor){
-    int max = vetor[0];
-    for (int i = 1; i < TAM; i++) if (vetor[i] > max) max = vetor[i];
-    int bucketCount = TAM;
-    if (max == 0) return vetor;
+    if (TAM <= 1) return vetor;
+    
+    // Encontrar min e max
+    int min = vetor[0], max = vetor[0];
+    for (int i = 1; i < TAM; i++) {
+        if (vetor[i] < min) min = vetor[i];
+        if (vetor[i] > max) max = vetor[i];
+    }
+    
+    // Se todos os elementos forem iguais, retornar
+    if (min == max) return vetor;
+    
+    // Número de buckets baseado no tamanho do array
+    int bucketCount = (TAM < 1000) ? TAM / 10 : 100; // Ajuste dinâmico
+    if (bucketCount <= 0) bucketCount = 1;
+    if (bucketCount > 1000) bucketCount = 1000; // Limite máximo
+    
+    // Alocar buckets
     int **buckets = malloc(bucketCount * sizeof(int*));
     int *sizes = calloc(bucketCount, sizeof(int));
+    int *capacities = malloc(bucketCount * sizeof(int));
+    
+    if (!buckets || !sizes || !capacities) {
+        // Fallback para insertion sort se falhar alocação
+        if (buckets) free(buckets);
+        if (sizes) free(sizes);
+        if (capacities) free(capacities);
+        return insertionSort(vetor);
+    }
+    
+    // Inicializar buckets
     for (int i = 0; i < bucketCount; i++) {
-        buckets[i] = malloc(TAM * sizeof(int));
-        sizes[i] = 0;
-    }
-    for (int i = 0; i < TAM; i++) {
-        int idx = (vetor[i] * bucketCount) / (max + 1);
-        if (idx < 0) idx = 0;
-        if (idx >= bucketCount) idx = bucketCount - 1;
-        buckets[idx][sizes[idx]++] = vetor[i];
-    }
-    for (int b = 0; b < bucketCount; b++) {
-        for (int i = 1; i < sizes[b]; i++) {
-            int key = buckets[b][i];
-            int j = i - 1;
-            while (j >= 0 && buckets[b][j] > key) {
-                buckets[b][j+1] = buckets[b][j];
-                j--;
-            }
-            buckets[b][j+1] = key;
+        capacities[i] = 10; // Capacidade inicial
+        buckets[i] = malloc(capacities[i] * sizeof(int));
+        if (!buckets[i]) {
+            // Cleanup em caso de falha
+            for (int j = 0; j < i; j++) free(buckets[j]);
+            free(buckets); free(sizes); free(capacities);
+            return insertionSort(vetor);
         }
     }
+    
+    // Distribuir elementos nos buckets
+    double range = (double)(max - min + 1);
+    for (int i = 0; i < TAM; i++) {
+        int idx = (int)((vetor[i] - min) * bucketCount / range);
+        if (idx < 0) idx = 0;
+        if (idx >= bucketCount) idx = bucketCount - 1;
+        
+        // Redimensionar bucket se necessário
+        if (sizes[idx] >= capacities[idx]) {
+            capacities[idx] *= 2;
+            int *newBucket = realloc(buckets[idx], capacities[idx] * sizeof(int));
+            if (!newBucket) {
+                // Cleanup em caso de falha
+                for (int j = 0; j < bucketCount; j++) free(buckets[j]);
+                free(buckets); free(sizes); free(capacities);
+                return insertionSort(vetor);
+            }
+            buckets[idx] = newBucket;
+        }
+        
+        buckets[idx][sizes[idx]++] = vetor[i];
+    }
+    
+    // Ordenar cada bucket com insertion sort
+    for (int b = 0; b < bucketCount; b++) {
+        if (sizes[b] > 0) {
+            for (int i = 1; i < sizes[b]; i++) {
+                int key = buckets[b][i];
+                int j = i - 1;
+                while (j >= 0 && buckets[b][j] > key) {
+                    buckets[b][j + 1] = buckets[b][j];
+                    j--;
+                }
+                buckets[b][j + 1] = key;
+            }
+        }
+    }
+    
+    // Juntar buckets
     int idx = 0;
     for (int b = 0; b < bucketCount; b++) {
         for (int j = 0; j < sizes[b]; j++) {
             vetor[idx++] = buckets[b][j];
         }
+        free(buckets[b]);
     }
-    for (int i = 0; i < bucketCount; i++) free(buckets[i]);
+    
+    // Liberar memória
     free(buckets);
     free(sizes);
+    free(capacities);
+    
     return vetor;
 }
 

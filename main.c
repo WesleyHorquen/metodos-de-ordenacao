@@ -78,23 +78,24 @@ int main(void) {
     printf("\n===============================\n");
 
     // Chama testarMetodo para os 16 algoritmos
-    //testarMetodo("Selection Sort", selectionSort);
-    //testarMetodo("Insertion Sort", insertionSort);
-    //testarMetodo("Bubble Sort", bubbleSort);
-    //testarMetodo("Comb Sort", combSort);
-    //testarMetodo("Quick Sort", quickSort);
-    //testarMetodo("Merge Sort", mergeSort);
-    //testarMetodo("Shell Sort", shellSort);
-    //testarMetodo("Heap Sort", heapSort);
-    //testarMetodo("Radix Sort", radixSort);
-    //testarMetodo("Counting Sort", countingSort);
-    //testarMetodo("Bucket Sort", bucketSort);
-    //testarMetodo("Cocktail Sort", cocktailSort);
-    //testarMetodo("Tim Sort", timSort);
-    //testarMetodo("Intro Sort", introSort);
-    //testarMetodo("Pancake Sort", pancakeSort);
+    testarMetodo("Selection Sort", selectionSort);
+    /*testarMetodo("Insertion Sort", insertionSort);
+    testarMetodo("Bubble Sort", bubbleSort);
+    testarMetodo("Comb Sort", combSort);
+    testarMetodo("Quick Sort", quickSort);
+    testarMetodo("Merge Sort", mergeSort);
+    testarMetodo("Shell Sort", shellSort);
+    testarMetodo("Heap Sort", heapSort);
+    testarMetodo("Radix Sort", radixSort);
+    testarMetodo("Counting Sort", countingSort);
+    testarMetodo("Bucket Sort", bucketSort);
+    testarMetodo("Cocktail Sort", cocktailSort);
+    testarMetodo("Tim Sort", timSort);
+    testarMetodo("Intro Sort", introSort);
     testarMetodo("Pigeonhole Sort", pigeonholeSort);
-
+    testarMetodo("Pancake Sort", pancakeSort);
+    */
+   
     printf("\n===============================");
     printf("\n>>> FIM DOS TESTES <<<");
     printf("\n===============================\n");

@@ -1,8 +1,9 @@
 #ifndef ORDENAR_H_INCLUDED
 #define ORDENAR_H_INCLUDED
+#define INSERTION_THRESHOLD 50
 
 // Define o tamanho do vetor (ajuste se quiser)
-#define TAM 10000
+#define TAM 1000000
 
 #include <stdio.h>
 #include <stdlib.h>
