@@ -17,7 +17,7 @@ void testarMetodo(const char *nomeMetodo, int *(*funcaoOrdenar)(int *)) {
 
     // Vetor aleatório
     printf("\n\t> Ordernar array aleatorio\n");
-    //exibir(vetor);
+    exibir(vetor);
     inicio = clock();
     funcaoOrdenar(vetor);
     fim = clock();
@@ -25,7 +25,7 @@ void testarMetodo(const char *nomeMetodo, int *(*funcaoOrdenar)(int *)) {
 
     // Vetor ordenado (vetor já está ordenado após primeira chamada)
     printf("\n\t> Ordernar array ordenado\n");
-    //exibir(vetor);
+    exibir(vetor);
     inicio = clock();
     funcaoOrdenar(vetor);
     fim = clock();
@@ -34,7 +34,7 @@ void testarMetodo(const char *nomeMetodo, int *(*funcaoOrdenar)(int *)) {
     // Vetor decrescente
     vetorDecr = inverterVetor(vetor);
     printf("\n\t> Ordernar array decrescente\n");
-    //exibir(vetorDecr);
+    exibir(vetorDecr);
     inicio = clock();
     funcaoOrdenar(vetorDecr);
     fim = clock();
@@ -44,7 +44,7 @@ void testarMetodo(const char *nomeMetodo, int *(*funcaoOrdenar)(int *)) {
     vetorDecr = inverterVetor(vetor);
     vetorEspecial1 = criarVetorEsp1(vetor, vetorDecr);
     printf("\n\t> Ordernar array primeira metade cresc. e segunda metade decre.\n");
-    //exibir(vetorEspecial1);
+    exibir(vetorEspecial1);
     inicio = clock();
     funcaoOrdenar(vetorEspecial1);
     fim = clock();
@@ -54,7 +54,7 @@ void testarMetodo(const char *nomeMetodo, int *(*funcaoOrdenar)(int *)) {
     vetorDecr = inverterVetor(vetor);
     vetorEspecial2 = criarVetorEsp2(vetor, vetorDecr);
     printf("\n\t> Ordernar array primeira metade decre. e segunda metade cresc.\n");
-    //exibir(vetorEspecial2);
+    exibir(vetorEspecial2);
     inicio = clock();
     funcaoOrdenar(vetorEspecial2);
     fim = clock();
@@ -78,8 +78,8 @@ int main(void) {
     printf("\n===============================\n");
 
     // Chama testarMetodo para os 16 algoritmos
-    testarMetodo("Selection Sort", selectionSort);
-    /*testarMetodo("Insertion Sort", insertionSort);
+    /*testarMetodo("Selection Sort", selectionSort);
+    testarMetodo("Insertion Sort", insertionSort);
     testarMetodo("Bubble Sort", bubbleSort);
     testarMetodo("Comb Sort", combSort);
     testarMetodo("Quick Sort", quickSort);
@@ -87,8 +87,8 @@ int main(void) {
     testarMetodo("Shell Sort", shellSort);
     testarMetodo("Heap Sort", heapSort);
     testarMetodo("Radix Sort", radixSort);
-    testarMetodo("Counting Sort", countingSort);
-    testarMetodo("Bucket Sort", bucketSort);
+    */testarMetodo("Counting Sort", countingSort);
+    /*testarMetodo("Bucket Sort", bucketSort);
     testarMetodo("Cocktail Sort", cocktailSort);
     testarMetodo("Tim Sort", timSort);
     testarMetodo("Intro Sort", introSort);

@@ -3,7 +3,7 @@
 #define INSERTION_THRESHOLD 50
 
 // Define o tamanho do vetor (ajuste se quiser)
-#define TAM 1000000
+#define TAM 10
 
 #include <stdio.h>
 #include <stdlib.h>
